@@ -60,10 +60,10 @@ const DASHBOARDS = [
   { title: "Overview", url: "/", icon: LayoutDashboard },
   {
     title: "Analytics",
-    url: "/analytics",
+    url: "/analy",
     icon: LineChart,
     children: [
-      { title: "Traffic", url: "/analytics/traffic", icon: LineChart },
+      { title: "Traffic", url: "/analy/traffic", icon: LineChart },
       { title: "Conversions", url: "/analytics/conversions", icon: BarChart3 },
       { title: "Funnel", url: "/analytics/funnel", icon: PieChart },
     ],
@@ -100,7 +100,17 @@ export default function AppSidebar() {
   });
 
   const toggleMenu = (key: string) => setOpenMenus((s) => ({ ...s, [key]: !s[key] }));
+
+  // Automatically expand a menu if a child is active
   const isActive = (url: string) => pathname === url || (url !== "/" && pathname.startsWith(url));
+  React.useEffect(() => {
+    DASHBOARDS.forEach((d) => {
+      if ("children" in d && d.children) {
+        const activeChild = d.children.some((sub) => isActive(sub.url));
+        if (activeChild) setOpenMenus((prev) => ({ ...prev, [d.title]: true }));
+      }
+    });
+  }, [pathname]);
 
   const easing: Easing = [0.42, 0, 0.58, 1];
   const submenuVariants: Variants = {
@@ -125,7 +135,7 @@ export default function AppSidebar() {
               }`}
               onClick={(e) => {
                 if (hasChildren) {
-                  e.preventDefault(); // Prevent navigation
+                  e.preventDefault();
                   toggleMenu(d.title);
                 }
               }}
@@ -211,7 +221,6 @@ export default function AppSidebar() {
       <SidebarSeparator />
 
       <SidebarContent className="px-2 py-2">
-        {/* Dashboards */}
         <SidebarGroup>
           <SidebarGroupLabel asChild>
             <div
@@ -267,7 +276,7 @@ export default function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Projects below Application */}
+        {/* Projects */}
         <SidebarGroup className="mt-4">
           <SidebarGroupLabel asChild>
             <div
