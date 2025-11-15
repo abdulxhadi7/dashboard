@@ -211,8 +211,8 @@ export default function AppSidebar() {
         <SidebarMenuItem>
           <SidebarMenuButton asChild tooltip={collapsed ? "Studio Admin" : undefined} className="gap-3 rounded-lg px-2 py-2 hover:bg-muted/60 transition">
             <Link href="/" className="flex items-center gap-3">
-              <Image src="/Logo.svg" alt="logo" width={20} height={20} />
-              <span className="font-semibold text-sm">Strange Zone</span>
+            <div className="font-extrabold text-xl">S</div>
+              <span className="px-2 font-semibold text-sm">Strange Zone</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
