@@ -68,7 +68,7 @@ const DASHBOARDS = [
       { title: "Funnel", url: "/analy/funnel", icon: PieChart },
     ],
   },
-  { title: "Sales Report", url: "/sales", icon: BarChart3 },
+  { title: "Sales Report", url: "/SalesReports", icon: BarChart3 },
   { title: "Audience", url: "/audience", icon: PieChart },
 ];
 
