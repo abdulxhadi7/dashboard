@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Camera } from "lucide-react";
+
 
 const items = [
   { 
