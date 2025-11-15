@@ -72,7 +72,7 @@ export default function ImageAccordion() {
                   transition={{ duration: 0.3 }}
                   className="absolute inset-0 flex flex-col items-center justify-center text-center p-3 text-white/90"
                 >
-                  <Camera size={22} className="mb-1 opacity-90" />
+                  
                   <p className="text-xs md:text-sm font-medium">{item.preview}</p>
                 </motion.div>
               )}
@@ -87,9 +87,7 @@ export default function ImageAccordion() {
                     transition={{ duration: 0.4 }}
                     className="absolute bottom-0 left-0 w-full p-4 flex items-start gap-3"
                   >
-                    <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-white/20 backdrop-blur">
-                      <Camera className="text-white" size={20} />
-                    </div>
+                   
 
                     <div>
                       <h2 className="text-white text-base md:text-lg font-semibold">
