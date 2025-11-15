@@ -64,8 +64,8 @@ const DASHBOARDS = [
     icon: LineChart,
     children: [
       { title: "Traffic", url: "/analy/traffic", icon: LineChart },
-      { title: "Conversions", url: "/analytics/conversions", icon: BarChart3 },
-      { title: "Funnel", url: "/analytics/funnel", icon: PieChart },
+      { title: "Conversions", url: "/analy/conversion", icon: BarChart3 },
+      { title: "Funnel", url: "/analy/funnel", icon: PieChart },
     ],
   },
   { title: "Sales Report", url: "/sales", icon: BarChart3 },
