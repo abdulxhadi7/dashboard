@@ -5,8 +5,19 @@ import { Filters } from "@/components/analytics/Filters";
 import { OverviewCard } from "@/components/analytics/OverviewCards";
 import { TopPagesTable } from "@/components/analytics/TopPagesTable";
 import { GeoMap } from "@/components/analytics/GeoMap";
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { generateTrafficData, TrafficDatum } from "@/components/analytics/utils/data-faker";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import {
+  generateTrafficData,
+  TrafficDatum,
+} from "@/components/analytics/utils/data-faker";
 
 export default function TrafficAnalyticsPage() {
   const [startDate, setStartDate] = useState<Date>(
@@ -16,9 +27,36 @@ export default function TrafficAnalyticsPage() {
 
   const data: TrafficDatum[] = generateTrafficData(30);
   const latest = data[data.length - 1];
+  const prev = data[data.length - 2] ?? latest;
 
-  // Convert geoTraffic array to Record<string, number> for new GeoMap
-  // Fallback: generate some mock geo traffic if missing
+  // ---- Compute values + trends ----
+  const totalVisits = data.reduce((acc, d) => acc + d.visits, 0);
+  
+  const visitsChange = (((latest.visits - prev.visits) / prev.visits) * 100).toFixed(1);
+
+  const totalUnique = data.reduce((acc, d) => acc + d.uniqueVisitors, 0);
+  const uniqueChange = (
+    ((latest.uniqueVisitors - prev.uniqueVisitors) / prev.uniqueVisitors) *
+    100
+  ).toFixed(1);
+
+  const avgBounce = (
+    data.reduce((acc, d) => acc + d.bounceRate, 0) / data.length
+  ).toFixed(2);
+  const bounceChange = (
+    ((latest.bounceRate - prev.bounceRate) / prev.bounceRate) *
+    100
+  ).toFixed(1);
+
+  const avgSession = (
+    data.reduce((acc, d) => acc + d.avgSession, 0) / data.length
+  ).toFixed(2);
+  const sessionChange = (
+    ((latest.avgSession - prev.avgSession) / prev.avgSession) *
+    100
+  ).toFixed(1);
+
+  // Geo Data
   const geoData: Record<string, number> = latest.geoTraffic
     ? latest.geoTraffic.reduce((acc, item) => {
         acc[item.country] = item.visits;
@@ -37,23 +75,43 @@ export default function TrafficAnalyticsPage() {
         setEndDate={setEndDate}
       />
 
-      {/* Overview Cards */}
+      {/* ---------- Overview Cards ---------- */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <OverviewCard title="Total Visits" value={data.reduce((acc, d) => acc + d.visits, 0)} />
-        <OverviewCard title="Unique Visitors" value={data.reduce((acc, d) => acc + d.uniqueVisitors, 0)} />
+        <OverviewCard
+          title="Total Visits"
+          value={totalVisits.toLocaleString()}
+          change={`${visitsChange}%`}
+          subtitle={`${visitsChange}% this period`}
+          note={Number(visitsChange) < 0 ? "Traffic has slowed down" : "Traffic growing steadily"}
+        />
+
+        <OverviewCard
+          title="Unique Visitors"
+          value={totalUnique.toLocaleString()}
+          change={`${uniqueChange}%`}
+          subtitle={`${uniqueChange}% this period`}
+          note={Number(uniqueChange) < 0 ? "Visitor decline detected" : "New users increasing"}
+        />
+
         <OverviewCard
           title="Bounce Rate"
-          value={`${(data.reduce((acc, d) => acc + d.bounceRate, 0) / data.length).toFixed(2)}%`}
+          value={`${avgBounce}%`}
+          change={`${bounceChange}%`}
+          subtitle={`${bounceChange}% this period`}
+          note={Number(bounceChange) > 0 ? "Engagement is dropping" : "Improved retention"}
         />
+
         <OverviewCard
           title="Avg. Session Duration"
-          value={`${(data.reduce((acc, d) => acc + d.avgSession, 0) / data.length).toFixed(2)} min`}
+          value={`${avgSession} min`}
+          change={`${sessionChange}%`}
+          subtitle={`${sessionChange}% this period`}
+          note={Number(sessionChange) < 0 ? "Users stay for less time" : "Session duration up"}
         />
       </div>
 
-      {/* Charts and Tables */}
+      {/* Charts + Top Pages */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Line Chart */}
         <div className="bg-white dark:bg-zinc-800 p-4 rounded-2xl shadow">
           <h2 className="font-bold mb-2">Traffic Over Time</h2>
           <ResponsiveContainer width="100%" height={300}>
@@ -68,7 +126,6 @@ export default function TrafficAnalyticsPage() {
           </ResponsiveContainer>
         </div>
 
-        {/* Top Pages Table */}
         <TopPagesTable data={latest.topPages ?? []} />
       </div>
 
